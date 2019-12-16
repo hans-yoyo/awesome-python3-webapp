@@ -15,7 +15,7 @@ def create_pool(loop, **kw):
         port=kw.get('port', 3306),
         user=kw.get('user', 'root'),
         password=kw.get('password', 'root'),
-        db=kw.get('db'),
+        db=kw.get('database'),
         charset=kw.get('charset', 'utf-8'),
         autocommit=kw.get('autocommit', True),
         maxsize=kw.get('maxsize', 10),
@@ -142,6 +142,7 @@ class ModelMetaclass(type):
 @asyncio.coroutine
 class Model(dict, metaclass=ModelMetaclass):
     def __init__(self, **kw):
+        print('Model init method')
         super(Model, self).__init__(**kw)
 
     def __getattr__(self, key):
