@@ -16,7 +16,16 @@ pip install jinja
 # MySQL异步驱动程序
 pip install aiomysql
 ```
+目录结构
 
+```
+|__backup 备份
+|__conf   配置文件
+|__dist   打包目录
+|__www    Web目录
+    |__static  静态资源
+    |__templates  模版文件
+```
 ## 编写项目骨架
 
 ## 编写ORM
