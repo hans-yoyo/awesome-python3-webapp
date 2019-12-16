@@ -16,5 +16,22 @@
   "bugs": {
     "url": "https://github.com/hyman213/awesome-python3-webapp/issues"
   },
-  "homepage": "https://github.com/hyman213/awesome-python3-webapp#readme"
+  "homepage": "https://github.com/hyman213/awesome-python3-webapp#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
+    "cz-conventional-changelog": "^3.0.2",
+    "husky": "^3.1.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "dependencies": {},
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  }
 }
