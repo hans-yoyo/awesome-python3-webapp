@@ -13,12 +13,12 @@ from coroweb import add_routes, add_static
 def init_jinja2(app, **kw):
     logging.info('init jinja2...')
     options = dict(
-        autoescape=kw.get('autoescape', True),
-        block_start_string=kw.get('block_start_string', '{%'),
-        block_end_string=kw.get('block_end_string', '%}'),
-        variable_start_string=kw.get('variable_start_string', '{{'),
-        variable_end_string=kw.get('variable_end_string', '}}'),
-        auto_reload=kw.get('auto_reload', True)
+        autoescape = kw.get('autoescape', True),
+        block_start_string = kw.get('block_start_string', '{%'),
+        block_end_string = kw.get('block_end_string', '%}'),
+        variable_start_string = kw.get('variable_start_string', '{{'),
+        variable_end_string = kw.get('variable_end_string', '}}'),
+        auto_reload = kw.get('auto_reload', True)
     )
     path = kw.get('path', None)
     if path is None:
@@ -85,11 +85,10 @@ def response_factory(app, handler):
             template = r.get('__template__')
             if template is None:
                 resp = web.Response(body=json.dumps(r, ensure_ascii=False, default=lambda o: o.__dict__).encode('utf-8'))
-                resp.content_type = 'application/octet-stream'
+                resp.content_type = 'application/json;charset=utf-8'
                 return resp
             # 模版
             else:
-                r['__user__'] = request.__user__
                 resp = web.Response(body=app['__templating__'].get_template(template).render(**r).encode('utf-8'))
                 resp.content_type = 'text/html;charset=utf-8'
                 return resp
@@ -99,12 +98,11 @@ def response_factory(app, handler):
             t, m = r
             if isinstance(t, int) and t >= 100 and t < 600:
                 return web.Response(t, str(m))
-        # default
+        # default:
         resp = web.Response(body=str(r).encode('utf-8'))
         resp.content_type = 'text/plain;charset=utf-8'
         return resp
     return response
-
 
 def datetime_filter(t):
     delta = int(time.time() - t)
@@ -130,7 +128,6 @@ def init(loop):
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers')
     add_static(app)
-    app.router.add_route('GET', '/', index)
     srv = yield from loop.create_server(app.make_handler(), '127.0.0.1',9000)
     logging.info('server start at http://127.0.0.1:9000...')
     return srv

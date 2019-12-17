@@ -41,15 +41,21 @@ def select(sql, args, size=None):
 
 '''insert、update、delete'''
 @asyncio.coroutine
-def execute(sql, args):
+def execute(sql, args, autocommit=True):
     log(sql, args)
     with (yield from __pool) as conn:
+        if not autocommit:
+            yield from conn.begin()
         try:
             cursor = yield from conn.cursor()
             yield from cursor.execute(sql.replace('?', '%s'), args or ())
             affected = cursor.rowcount
             yield from cursor.close()
+            if not autocommit:
+                yield from conn.commit()
         except BaseException as e:
+            if not autocommit:
+                yield from conn.rollback()
             raise
         return affected
 
@@ -139,10 +145,8 @@ class ModelMetaclass(type):
 
 
 '''所有ORM映射的基类'''
-@asyncio.coroutine
 class Model(dict, metaclass=ModelMetaclass):
     def __init__(self, **kw):
-        print('Model init method')
         super(Model, self).__init__(**kw)
 
     def __getattr__(self, key):

@@ -17,11 +17,11 @@ def get(path):
         def wrapper(*args, **kw):
             return func(*args, **kw)
         wrapper.__method__ = 'GET'
-        wrapper.__router__ = path
+        wrapper.__route__ = path
         return wrapper
     return decorator
 
-def get(path):
+def post(path):
     '''
     Define decorator @post('/path')
     :param path:
@@ -92,7 +92,7 @@ class RequestHandler(object):
     @asyncio.coroutine
     def __call__(self, request):
         kw = None
-        if self._has_var_kw_args or self._has_named_kw_args or self._required_kw_args:
+        if self._has_var_kw_arg or self._has_named_kw_args or self._required_kw_args:
             if request.method == 'POST':
                 if not request.content_type:
                     return web.HTTPBadRequest('Missing Content-Type.')
@@ -113,34 +113,34 @@ class RequestHandler(object):
                     kw = dict()
                     for k, v in parse.parse_qs(qs, True).items():
                         kw[k] = v[0]
-            if kw is None:
-                kw = dict(**request.match_info)
-            else:
-                if not self._has_var_kw_arg and self._named_kw_args:
-                    # remove all unamed kw:
-                    copy = dict()
-                    for name in self._named_kw_args:
-                        if name in kw:
-                            copy[name] = kw[name]
-                    kw = copy
-                # check named arg:
-                for k, v in request.match_info.items():
-                    if k in kw:
-                        logging.warning('Duplicate arg name in named arg and kw args: %s' % k)
-                    kw[k] = v
-            if self._has_request_arg:
-                kw['request'] = request
-            # check required kw:
-            if self._required_kw_args:
-                for name in self._required_kw_args:
-                    if not name in kw:
-                        return web.HTTPBadRequest('Missing argument: %s' % name)
-            logging.info('call with args: %s' % str(kw))
-            try:
-                r = yield from self._func(**kw)
-                return r
-            except APIError as e:
-                return dict(error=e.error, data=e.data, message=e.message)
+        if kw is None:
+            kw = dict(**request.match_info)
+        else:
+            if not self._has_var_kw_arg and self._named_kw_args:
+                # remove all unamed kw:
+                copy = dict()
+                for name in self._named_kw_args:
+                    if name in kw:
+                        copy[name] = kw[name]
+                kw = copy
+            # check named arg:
+            for k, v in request.match_info.items():
+                if k in kw:
+                    logging.warning('Duplicate arg name in named arg and kw args: %s' % k)
+                kw[k] = v
+        if self._has_request_arg:
+            kw['request'] = request
+        # check required kw:
+        if self._required_kw_args:
+            for name in self._required_kw_args:
+                if not name in kw:
+                    return web.HTTPBadRequest('Missing argument: %s' % name)
+        logging.info('call with args: %s' % str(kw))
+        try:
+            r = yield from self._func(**kw)
+            return r
+        except APIError as e:
+            return dict(error=e.error, data=e.data, message=e.message)
 
 def add_static(app):
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
