@@ -125,6 +125,7 @@ def init(loop):
     app = web.Application(loop=loop, middlewares=[
         logger_factory, response_factory
     ])
+    # 时间格式化
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers')
     add_static(app)
