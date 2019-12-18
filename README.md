@@ -40,6 +40,9 @@ pip install aiomysql
 
 ## 构建前端
 
+- UIkit前端组件
+- HTML模版复用
+
 ## 编写API
 
 ## 完成用户登录和注册
