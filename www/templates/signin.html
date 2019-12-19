@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html class="uk-height-1-1">
+<head>
+    <meta charset="utf-8" />
+    <title>登录 - Awesome Python Webapp</title>
+    <link rel="stylesheet" href="/static/css/uikit.min.css">
+    <link rel="stylesheet" href="/static/css/uikit-rtl.min.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/sha1.min.js"></script>
+    <script src="/static/js/uikit.min.js"></script>
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/js/awesome.js"></script>
+    <script>
+
+$(function() {
+    var vmAuth = new Vue({
+        el: '#vm',
+        data: {
+            email: '',
+            passwd: ''
+        },
+        methods: {
+            submit: function(event) {
+                event.preventDefault();
+                var $form = $('#vm'),
+                    email = this.email.trim().toLowerCase(),
+                    data = {
+                        email: email,
+                        password: this.passwd==='' ? '' : CryptoJS.SHA1(email + ':' + this.passwd).toString()
+                    };
+                $form.postJSON('/api/authenticate', data, function(err, result) {
+                    if (! err) {
+                        location.assign('/');
+                    }
+                });
+            }
+        }
+    });
+});
+
+    </script>
+</head>
+<body>
+    <div class="uk-width-2-3">
+    <h1>用户登录</h1>
+    <form id="vm" v-on="submit: submit" class="uk-form-stacked uk-margin-large">
+        <div class="uk-alert uk-alert-danger uk-hidden"></div>
+        <div class="uk-margin">
+            <label class="uk-form-label" for="form-horizontal-text-email">电子邮件:</label>
+            <div class="uk-form-controls">
+                <input v-model="email" type="text" maxlength="50" id="form-horizontal-text-email"
+                       placeholder="your-name@example.com"
+                       class="uk-input">
+            </div>
+        </div>
+        <div class="uk-margin">
+            <label class="uk-form-label" for="form-horizontal-text-passwd1">输入口令:</label>
+            <div class="uk-form-controls">
+                <input v-model="passwd" type="password" id="form-horizontal-text-passwd1" maxlength="50"
+                       placeholder="输入口令" class="uk-input">
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <button type="submit" class="uk-button uk-button-primary"><i uk-icon="sign-in"></i> 登录</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
