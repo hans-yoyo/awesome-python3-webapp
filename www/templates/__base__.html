@@ -30,11 +30,11 @@
     </div>
     <div class="uk-navbar-right">
         <ul class="uk-navbar-nav">
-            {% if user %}
-            <li class="uk-parent" data-uk-dropdown>
-                <a href="#0"><i class="uk-icon-user"></i> {{user.name}} </a>
-                <div class="uk-dropdown uk-dropdown-nav">
-                    <ul class="uk-nav uk-nav-navbar">
+            {% if __user__ %}
+            <li >
+                <a href="#0"><i class="uk-icon-user"></i> {{__user__.name}} </a>
+                <div uk-dropdown="mode:hover">
+                    <ul class="uk-nav uk-dropdown-nav">
                         <li><a href="/signout"><i uk-icon="sign-out"></i> 登出</a></li>
                     </ul>
                 </div>

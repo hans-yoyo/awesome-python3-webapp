@@ -52,6 +52,8 @@ pip install aiomysql
 "用户id" + "过期时间" + SHA1("用户id" + "用户口令" + "过期时间" + "SecretKey")
 ```
 
+app.py中auth_factory用来做登录校验，并将user放入request域
+
 ## 编写日志创建页
 
 ## 编写日志列表页
