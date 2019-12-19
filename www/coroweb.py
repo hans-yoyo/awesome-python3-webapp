@@ -32,7 +32,7 @@ def post(path):
         def wrapper(*args, **kw):
             return func(*args, **kw)
         wrapper.__method__ = 'POST'
-        wrapper.__router__ = path
+        wrapper.__route__ = path
         return wrapper
     return decorator
 
